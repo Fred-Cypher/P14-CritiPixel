@@ -2,6 +2,7 @@
 
 namespace App\Doctrine\DataFixtures;
 
+use App\Model\Entity\Tag;
 use App\Model\Entity\User;
 use App\Model\Entity\VideoGame;
 use App\Rating\CalculateAverageRating;
@@ -27,28 +28,42 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
     {
         $users = $manager->getRepository(User::class)->findAll();
 
-        $videoGames = array_fill_callback(0, 50, fn (int $index): VideoGame => (new VideoGame)
-            ->setTitle(sprintf('Jeu vidéo %d', $index))
-            ->setDescription($this->faker->paragraphs(10, true))
-            ->setReleaseDate(new DateTimeImmutable())
-            ->setTest($this->faker->paragraphs(6, true))
-            ->setRating(($index % 5) + 1)
-            ->setImageName(sprintf('video_game_%d.png', $index))
-            ->setImageSize(2_098_872)
-        );
+        $tags = [];
+        foreach (TagFixtures::TAGS as $tagName) {
+            $tags[] = $this->getReference('tag-' . $tagName, Tag::class);
+        }
 
-        // TODO : Ajouter les tags aux vidéos
+        $videoGames = array_fill_callback(0, 50, function (int $index) use ($tags): VideoGame {
+            $game = (new VideoGame())
+                ->setTitle(sprintf('Jeu vidéo %d', $index))
+                ->setDescription($this->faker->paragraphs(10, true))
+                ->setReleaseDate(new \DateTimeImmutable())
+                ->setTest($this->faker->paragraphs(6, true))
+                ->setRating(($index % 5) + 1)
+                ->setImageName(sprintf('video_game_%d.png', $index))
+                ->setImageSize(2_098_872);
+
+            // Puisqu'il n'y a pas de addTag(), on manipule directement la Collection
+            $randomTags = $this->faker->randomElements($tags, rand(2, 3));
+            foreach ($randomTags as $tag) {
+                $game->getTags()->add($tag);
+            }
+            $this->addReference('video-game-' . $index, $game);
+
+            return $game;
+        });
 
         array_walk($videoGames, [$manager, 'persist']);
 
         $manager->flush();
 
-        // TODO : Ajouter des reviews aux vidéos
-
     }
 
     public function getDependencies(): array
     {
-        return [UserFixtures::class];
+        return [
+            UserFixtures::class,
+            TagFixtures::class
+        ];
     }
 }

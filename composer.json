@@ -121,7 +121,7 @@
         "symfony/debug-bundle": "6.4.*",
         "symfony/maker-bundle": "^1.58",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/phpunit-bridge": "^7.0",
+        "symfony/phpunit-bridge": "^8.0",
         "symfony/stopwatch": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"
     }
