@@ -31,4 +31,19 @@ class RatingHandlerTest extends TestCase
 
         $this->assertEquals(2, $videoGame->getAverageRating());
     }
+
+    public function testCountRatingsPerValue(): void
+    {
+        $videoGame = new VideoGame();
+        $videoGame->getReviews()->add((new Review())->setRating(5));
+        $videoGame->getReviews()->add((new Review())->setRating(5));
+        $videoGame->getReviews()->add((new Review())->setRating(1));
+
+        $this->handler->countRatingsPerValue($videoGame);
+
+        $stats = $videoGame->getNumberOfRatingsPerValue();
+        $this->assertEquals(1, $stats->getNumberOfOne());
+        $this->assertEquals(2, $stats->getNumberOfFive());
+        $this->assertEquals(0, $stats->getNumberOfThree());
+    }
 }
