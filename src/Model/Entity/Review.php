@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Constraints\Range;
 
 #[Entity]
@@ -33,6 +34,7 @@ class Review
     #[Column]
     private int $rating;
 
+    #[Assert\Length(max:1000, maxMessage: 'Ce commentaire est trop long')]
     #[Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
