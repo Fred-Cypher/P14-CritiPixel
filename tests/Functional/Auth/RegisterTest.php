@@ -28,17 +28,17 @@ final class RegisterTest extends FunctionalTestCase
         self::assertTrue($userPasswordHasher->isPasswordValid($user, 'SuperPassword123!'));
     }
 
-//    /**
-//     * @dataProvider provideInvalidFormData
-//     */
-//    public function testThatRegistrationShouldFailed(array $formData): void
-//    {
-//        $this->get('/auth/register');
-//
-//        $this->client->submitForm('S\'inscrire', $formData);
-//
-//        self::assertResponseIsUnprocessable();
-//    }
+    /**
+     * @dataProvider provideInvalidFormData
+     */
+    public function testThatRegistrationShouldFailed(array $formData): void
+    {
+        $this->get('/auth/register');
+
+        $this->client->submitForm('S\'inscrire', $formData);
+
+        self::assertResponseIsUnprocessable();
+    }
 
     public static function provideInvalidFormData(): iterable
     {
@@ -52,10 +52,10 @@ final class RegisterTest extends FunctionalTestCase
 
     public static function getFormData(array $overrideData = []): array
     {
-        return [
+        return $overrideData + [
             'register[username]' => 'username',
             'register[email]' => 'user@email.com',
             'register[plainPassword]' => 'SuperPassword123!'
-        ] + $overrideData;
+        ];
     }
 }
