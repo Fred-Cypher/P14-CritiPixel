@@ -38,6 +38,9 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
 
+      - name: Clear cache
+        run: php bin/console cache:clear --env=test
+
       - name: Create Database and Schema
         run: |
           mkdir -p var
