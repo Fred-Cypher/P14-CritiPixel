@@ -40,8 +40,8 @@ public function __construct(private readonly Generator $faker)
     public function getDependencies(): array
     {
         return [
-            UserFixtures::class,
-            VideoGameFixtures::class
+            VideoGameFixtures::class,
+            UserFixtures::class
         ];
     }
 }
