@@ -28,7 +28,7 @@
     </coverage>
 
     <extensions>
-
+        <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension" />
     </extensions>
 
     <listeners>
