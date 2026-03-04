@@ -16,6 +16,7 @@ jobs:
     env:
       DATABASE_URL: "sqlite:///${{ github.workspace }}/var/app.db"
       APP_ENV: test
+      APP_SECRET: "ci-secret"
 
     steps:
       - uses: actions/checkout@v4
@@ -52,5 +53,13 @@ jobs:
       - name: Debug routes
         run: php bin/console debug:router --env=test
 
+      - name: Check login page
+        run: |
+          php -S 127.0.0.1:8000 -t public &
+          sleep 2
+          curl -I http://127.0.0.1:8000/login
+
       - name: Execute tests
         run: vendor/bin/phpunit
+        env:
+          APP_ENV: test
