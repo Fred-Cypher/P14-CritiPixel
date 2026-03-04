@@ -31,6 +31,10 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
 
+      - name: Prepare Assets
+        run: |
+          php bin/console sass:build
+
       - name: Prepare Database
         run: |
           mkdir -p var
