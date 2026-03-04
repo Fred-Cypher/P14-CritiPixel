@@ -2,7 +2,7 @@ name: Symfony
 
 on:
   push:
-    branches: [ "feature/ci"]
+    branches: [ "feature/ci" ]
   pull_request:
     branches: [ "feature/ci" ]
 
@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: "sqlite:///${{ github.workspace }}/var/app.db"
       APP_ENV: test
-      APP_SECRET: "ci-secret"
+      APP_SECRET: ci-secret
+      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/app.db"
 
     steps:
       - uses: actions/checkout@v4
@@ -28,38 +28,15 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, sqlite3
           coverage: none
 
-      - name: Cache Composer packages
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
       - name: Install Dependencies
         run: composer install --no-ansi --no-interaction --no-progress --prefer-dist
 
-      - name: Clear cache
-        run: php bin/console cache:clear --env=test
-
       - name: Prepare Database
         run: |
-          rm -f var/app.db
           mkdir -p var
-          touch var/app.db
+          rm -f var/app.db
           php bin/console doctrine:schema:create --env=test
           php bin/console doctrine:fixtures:load --no-interaction --env=test
 
-      - name: Debug routes
-        run: php bin/console debug:router --env=test
-
-      - name: Check login page
-        run: |
-          php -S 127.0.0.1:8000 -t public &
-          sleep 2
-          curl -I http://127.0.0.1:8000/login
-
       - name: Execute tests
-        run: vendor/bin/phpunit
-        env:
-          APP_ENV: test
+        run: php bin/phpunit
