@@ -41,11 +41,12 @@ jobs:
       - name: Clear cache
         run: php bin/console cache:clear --env=test
 
-      - name: Create Database and Schema
+      - name: Prepare Database
         run: |
+          rm -f var/app.db
           mkdir -p var
-          php bin/console doctrine:database:create --if-not-exists --env=test
-          php bin/console doctrine:schema:update --force --env=test
+          touch var/app.db
+          php bin/console doctrine:schema:create --env=test
           php bin/console doctrine:fixtures:load --no-interaction --env=test
 
       - name: Debug routes
