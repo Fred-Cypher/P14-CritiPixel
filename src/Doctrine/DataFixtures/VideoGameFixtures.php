@@ -39,6 +39,7 @@ final class VideoGameFixtures extends Fixture implements DependentFixtureInterfa
             }
 
             $manager->persist($game);
+            $this->addReference('video-game-' . $index, $game);
         }
 
         $manager->flush();
