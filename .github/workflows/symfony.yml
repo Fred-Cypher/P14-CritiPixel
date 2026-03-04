@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: "sqlite:///%kernel.project_dir%/var/app.db"
+      DATABASE_URL: "sqlite:///${{ github.workspace }}/var/app.db"
       APP_ENV: test
 
     steps:
@@ -44,11 +44,15 @@ jobs:
       - name: Create Database and Schema
         run: |
           mkdir -p var
-          php bin/console doctrine:database:create --env=test
-          php bin/console doctrine:schema:create --env=test
+          php bin/console doctrine:database:create
+          php bin/console doctrine:schema:create
+          php bin/console doctrine:fixtures:load --no-interaction
 
       - name: Load Fixtures
         run: php bin/console doctrine:fixtures:load --no-interaction --env=test
+
+      - name: Debug routes
+        run: php bin/console debug:router --env=test
 
       - name: Execute tests
         run: vendor/bin/phpunit
