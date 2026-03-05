@@ -55,11 +55,9 @@ final class FilterTest extends FunctionalTestCase
 
         yield 'pas de tag' => ['/', []];
 
-        yield 'Action tag' => ['/?filter[tags][]=8', ['Action']];
-
-        yield 'RPG tag' => ['/?filter[tags][]=9', ['RPG']];
-
-        yield 'deux tags (Action + RPG)' => ['/?filter[tags][]=8&filter[tags][]=9', ['Action', 'RPG']];
+        yield 'Action tag' => ['/?filter[tags][]=1', ['Action']];
+        yield 'RPG tag' => ['/?filter[tags][]=2', ['RPG']];
+        yield 'deux tags (Action + RPG)' => ['/?filter[tags][]=1&filter[tags][]=2', ['Action', 'RPG']];
 
         yield 'Tag qui n\'existe pas' => ['/?filter[tags][]=999', []];
     }
